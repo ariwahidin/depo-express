@@ -1,0 +1,26 @@
+{
+    "name": "myvendor/helloworld",
+    "version": "1.0.0",
+    "description": "A simple package to display 'Hello, World!'",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Your Name",
+        "email": "youremail@example.com"
+      }
+    ],
+    "autoload": {
+      "psr-4": {
+        "MyVendor\\HelloWorld\\": "src/"
+      }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "MyVendor\\HelloWorld\\HelloWorldServiceProvider"
+        ]
+      }
+    }
+  }
+  
