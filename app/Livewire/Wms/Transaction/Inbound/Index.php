@@ -17,6 +17,7 @@ class Index extends Component
     public $search = '';
     public $status = 'all';
 
+    #[\Livewire\Attributes\On('hideDeleteModalNow')]
     public function render()
     {
         return view('livewire.wms.transaction.inbound.index', [
@@ -53,6 +54,7 @@ class Index extends Component
                 'inbound_headers.truck_no',
                 DB::raw('COUNT(inbound_details.item_code) as total_items'),
                 DB::raw('SUM(inbound_details.req_qty) as total_qty'),
+                DB::raw('SUM(inbound_details.price) as total_price'),
                 'inbound_headers.koli',
                 'inbound_headers.ib_type',
                 'inbound_headers.status_proccess',

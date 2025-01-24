@@ -17,7 +17,7 @@
                         fill="#7367F0" />
                 </svg> -->
             </span>
-            <span style="font-size: 20px;" class="app-brand-text demo menu-text fw-bold">DepoExpress</span>
+            <span style="font-size: 18px;" class="app-brand-text demo menu-text fw-bold">Depo Inventory</span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">

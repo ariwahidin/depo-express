@@ -33,7 +33,7 @@ class Form extends Component
         }
 
         if ($this->edit) {
-            
+
             $header = \App\Models\InboundHeader::with(['suppliers', 'transporters'])
                 ->where('id', $this->inbound_id)
                 ->first();
@@ -81,6 +81,7 @@ class Form extends Component
                         'location' => $d->location,
                         'received_date' => $d->receive_date,
                         'adaptor' => $item->adaptor,
+                        'price' => $d->price,
                         'manual_book' => $item->manual_book,
                         'sn' => $item->sn,
                         'warehouse' => $d->wh_code,
@@ -89,11 +90,14 @@ class Form extends Component
                     ];
             }
         } else {
+            $transporter = \App\Models\Transporter::where('code', 'EXP-0001')->first();
+            $supplier = \App\Models\Supplier::where('code', 'SUP-0001')->first();
+
+            // dd($supplier, $transporter);
             $this->headerData = [
                 'receive_id' => 'Auto Generate',
                 'received_date' => date('Y-m-d'),
                 'truck_time_arrival' => date('H:i'),
-                'customer_name' => '',
                 'start_unloading' => date('H:i'),
                 'end_unloading' => date('H:i'),
                 'doc_no' => '',
@@ -101,13 +105,13 @@ class Form extends Component
                 'po_date' => date('Y-m-d'),
                 'original_country' => '',
                 'remarks' => '',
-                'invoice_no' => '',
-                'supplier' => '',
-                'supplier_name' => '',
-                'transporter' => '',
-                'transporter_name' => '',
-                'driver' => '',
-                'truck_no' => '',
+                'invoice_no' => 'OTHER',
+                'supplier' => $supplier->code,
+                'supplier_name' => $supplier->name,
+                'transporter' => $transporter->code,
+                'transporter_name' => $transporter->name,
+                'driver' => 'OTHER',
+                'truck_no' => 'B 1234 ABC',
                 'truck_size' => '',
                 'container_no' => '',
                 'bl_no' => '',
@@ -117,6 +121,7 @@ class Form extends Component
                 'container_no' => '',
                 'size_id' => 0,
             ];
+            $this->addItem();
         }
 
         $this->itemPilihan = \App\Models\Item::all();
@@ -159,7 +164,7 @@ class Form extends Component
             'headerData.doc_no' => 'required',
             'headerData.sj_no' => 'required',
             'headerData.po_date' => 'required',
-            'headerData.original_country' => 'required',
+            // 'headerData.original_country' => 'required',
             // 'headerData.remarks' => 'required',
             'headerData.invoice_no' => 'required',
             'headerData.supplier' => 'required',
@@ -168,8 +173,8 @@ class Form extends Component
             'headerData.truck_no' => 'required',
             // 'headerData.truck_size' => 'required',
             // 'headerData.container_no' => 'required',
-            'headerData.bl_no' => 'required',
-            'headerData.ib_status' => 'required',
+            // 'headerData.bl_no' => 'required',
+            // 'headerData.ib_status' => 'required',
             // 'headerData.koli' => 'required', 
             // 'headerData.seal' => 'required',
         ]);
@@ -188,6 +193,11 @@ class Form extends Component
 
             if (empty($item['quantity']) || $item['quantity'] < 1) {
                 session()->flash('error', 'Quantity cannot must be filled');
+                return false;
+            }
+
+            if (empty($item['price']) || $item['price'] < 1) {
+                session()->flash('error', 'Price cannot must be filled');
                 return false;
             }
 
@@ -257,6 +267,8 @@ class Form extends Component
                 'updated_at' => date('Y-m-d H:i:s'),
             ];
 
+            // dd($dataInboundHeader);
+
             $inboundHeader = \App\Models\InboundHeader::create($dataInboundHeader);
             $inbound_id = $inboundHeader->id;
             $receive_id = $inboundHeader->receive_id;
@@ -267,6 +279,7 @@ class Form extends Component
                     'receive_id' => $receive_id,
                     'item_code' => $item['item_code'],
                     'location' => $item['location'],
+                    'price' => (float)str_replace(',', '', $item['price']),
                     'receive_date' => $item['received_date'],
                     'req_qty' => $item['quantity'],
                     'scan_qty' => 0,
@@ -274,6 +287,8 @@ class Form extends Component
                     'created_by' => Auth::id(),
                     'updated_by' => Auth::id()
                 ];
+
+                // dd($dataItemDetail);
                 \App\Models\InboundDetail::create($dataItemDetail);
             }
 
@@ -290,6 +305,8 @@ class Form extends Component
 
     public function update()
     {
+
+        // dd($this->headerData, $this->items);
 
         // check if receive_id is exist and status is open
         $inbound = \App\Models\InboundHeader::where('receive_id', $this->headerData['receive_id'])
@@ -340,6 +357,7 @@ class Form extends Component
                     'receive_id' => $inbound->receive_id,
                     'item_code' => $item['item_code'],
                     'location' => $item['location'],
+                    'price' => (float)str_replace(',', '', $item['price']),
                     'receive_date' => $item['received_date'],
                     'req_qty' => $item['quantity'],
                     'scan_qty' => 0,

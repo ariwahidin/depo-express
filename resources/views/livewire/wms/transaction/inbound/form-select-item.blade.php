@@ -1,5 +1,5 @@
 <div>
-    <select id="select-item-{{ $index }}" class="form-control-sm mb-1 mt-2 w-50"
+    <select id="select-item-{{ $index }}" class="form-control-sm mb-1 mt-2 w-100"
         data-index="{{ $index }}"
         required>
         <option value="">Select Item Code</option>

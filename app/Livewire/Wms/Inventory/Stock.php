@@ -12,13 +12,11 @@ class Stock extends Component
 {
 
     use WithPagination;
+    public $periode_date = '';
     public $search = '';
-    public $status = 'all';
-
 
     public function render()
     {
-
         return view('livewire.wms.inventory.stock', [
             'stocks' => $this->getStock(),
         ]);
@@ -32,10 +30,17 @@ class Stock extends Component
                 $query->where('items.item_code', 'like', '%' . $this->search . '%')
                     ->orWhere('items.item_name', 'like', '%' . $this->search . '%');
             })
-            ->where('stocks.status_qa', 'A')
-            ->where('qty_avail', '>', 0)
-            ->select('pallets.*', 'stocks.expiry_date', 'items.item_name')
-            ->orderBy('stocks.expiry_date')
+            ->select(
+                'stocks.stock_no',
+                'pallets.item_code',
+                'pallets.location',
+                'items.item_name',
+                DB::raw('SUM(pallets.qty_in) as total_qty_in'),
+                DB::raw('SUM(pallets.qty_out) as total_qty_out'),
+                DB::raw('SUM(pallets.qty_avail) as total_qty_avail')
+            )
+            ->groupBy('pallets.item_code', 'pallets.location')
+            ->orderBy('pallets.created_at', 'desc')
             ->paginate(10);
     }
 }

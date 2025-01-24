@@ -20,7 +20,7 @@
                         <option value="open">Open</option>
                         <option value="completed">Completed</option>
                     </select>
-                    <button type="button" class="btn btn-success" wire:click="exportExcel">Excel</button>
+                    <button type="button" class="btn btn-success d-none" wire:click="exportExcel">Excel</button>
                     <a href="{{ route('outbound-create') }}" class="btn btn-primary">New</a>
                     <button type="button" class="btn btn-info" style="width: 150px;" wire:click="$dispatch('reload')">
                         <i class="ti ti-refresh me-1"></i>
@@ -36,16 +36,9 @@
                         <th>No.</th>
                         <th>Outbound No.</th>
                         <th>Picking Date</th>
-                        <th>Customer</th>
-                        <th>.</th>
-                        <th>Trucker</th>
-                        <th>Truck No.</th>
-                        <th>Total Item</th>
-                        <th>Qty Rec</th>
-                        <th>Qty Scan</th>
-                        <th>Koli</th>
-                        <th>Seal</th>
                         <th>Status</th>
+                        <th>Total Item</th>
+                        <th>Total Qty</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -55,16 +48,15 @@
                         <td>{{ $loop->iteration + ($outbounds->currentPage() - 1) * $outbounds->perPage() }}</td>
                         <td>{{ $outbound->outbound_no }}</td>
                         <td>{{ $outbound->picking_date }}</td>
-                        <td>{{ $outbound->customer_name }}</td>
-                        <td>{{ $outbound->driver }}</td>
-                        <td>{{ $outbound->transporter_name }}</td>
-                        <td>{{ $outbound->truck_no }}</td>
+                        <td>
+                            @if ($outbound->status_proccess == 'open')
+                            <span class="badge bg-label-warning">Open</span>
+                            @else
+                            <span class="badge bg-label-success">Completed</span>
+                            @endif
+                        </td>
                         <td>{{ $outbound->total_items }}</td>
                         <td>{{ $outbound->total_qty }}</td>
-                        <td></td>
-                        <td>{{ $outbound->koli }}</td>
-                        <td>{{ $outbound->seal }}</td>
-                        <td>{{ $outbound->status_proccess }}</td>
                         <td>
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>

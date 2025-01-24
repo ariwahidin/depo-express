@@ -13,13 +13,25 @@ class WarehouseSeeder extends Seeder
      */
     public function run(): void
     {
-        $warehouses = Warehouse::all();
-        foreach ($warehouses as $warehouse) {
-            \App\Models\Warehouse::create(
-                [
-                    'code' => $warehouse->wh_code
-                ]
-            );
-        }
+        // $warehouses = Warehouse::all();
+        // foreach ($warehouses as $warehouse) {
+        //     \App\Models\Warehouse::create(
+        //         [
+        //             'code' => $warehouse->wh_code
+        //         ]
+        //     );
+        // }
+
+        \App\Models\Warehouse::create(
+            [
+                'code' => 'CKG'
+            ]
+        );
+
+        \App\Models\Warehouse::create(
+            [
+                'code' => 'NGK'
+            ]
+        );
     }
 }

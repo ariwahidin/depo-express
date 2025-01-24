@@ -13,21 +13,35 @@ class TransporterSeeder extends Seeder
      */
     public function run(): void
     {
-        $transporters = Ekspedisi::all();
-        foreach ($transporters as $transporter) {
-            \App\Models\Transporter::create(
-                [
-                    'code' => $transporter->eks_id,
-                    'name' => $transporter->eks_name,
-                    'address' => $transporter->eks_adderss ?? '',
-                    'phone' => $transporter->phone ?? '',
-                    'email' => $transporter->email ?? '',
-                    'city' => $transporter->city ?? '',
-                    'country' => $transporter->country ?? '',
-                    'pic' => $transporter->pic ?? '',
-                    'fax' => $transporter->fax ?? '',
-                ]
-            );
-        }
+        // $transporters = Ekspedisi::all();
+        // foreach ($transporters as $transporter) {
+        //     \App\Models\Transporter::create(
+        //         [
+        //             'code' => $transporter->eks_id,
+        //             'name' => $transporter->eks_name,
+        //             'address' => $transporter->eks_adderss ?? '',
+        //             'phone' => $transporter->phone ?? '',
+        //             'email' => $transporter->email ?? '',
+        //             'city' => $transporter->city ?? '',
+        //             'country' => $transporter->country ?? '',
+        //             'pic' => $transporter->pic ?? '',
+        //             'fax' => $transporter->fax ?? '',
+        //         ]
+        //     );
+        // }
+
+        \App\Models\Transporter::create(
+            [
+                'code' => 'EXP-0001',
+                'name' => 'OTHER',
+                'address' => 'OTHER',
+                'phone' => '',
+                'email' => '',
+                'city' => '',
+                'country' => '',
+                'pic' => '',
+                'fax' => '',
+            ]
+        );
     }
 }

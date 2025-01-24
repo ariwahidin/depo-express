@@ -12,21 +12,35 @@ class CustomerSeeder extends Seeder
      */
     public function run(): void
     {
-        $customers = Customer::all();
-        foreach ($customers as $customer) {
-            \App\Models\Customer::create(
-                [
-                    'code' => $customer->cust_id,
-                    'name' => $customer->cust_name,
-                    'address' => $customer->cust_addr1,
-                    'area' => $customer->cust_area,
-                    'city' => $customer->cust_city,
-                    'country' => $customer->cust_country,
-                    'phone' => $customer->cust_phone ?? '',
-                    'email' => $customer->cust_email ?? '',
-                    'delivery_owner' => $customer->delivery_owner,
-                ]
-            );
-        }
+        // $customers = Customer::all();
+        // foreach ($customers as $customer) {
+        //     \App\Models\Customer::create(
+        //         [
+        //             'code' => $customer->cust_id,
+        //             'name' => $customer->cust_name,
+        //             'address' => $customer->cust_addr1,
+        //             'area' => $customer->cust_area,
+        //             'city' => $customer->cust_city,
+        //             'country' => $customer->cust_country,
+        //             'phone' => $customer->cust_phone ?? '',
+        //             'email' => $customer->cust_email ?? '',
+        //             'delivery_owner' => $customer->delivery_owner,
+        //         ]
+        //     );
+        // }
+
+        \App\Models\Customer::create(
+            [
+                'code' => 'CUS-0001',
+                'name' => 'OTHER',
+                'address' => 'OTHER',
+                'area' => '',
+                'city' => '',
+                'country' => '',
+                'phone' => '',
+                'email' => '',
+                'delivery_owner' => '',
+            ]
+        );
     }
 }

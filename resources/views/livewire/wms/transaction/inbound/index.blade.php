@@ -15,7 +15,7 @@
                         <option value="open">Open</option>
                         <option value="closed">Closed</option>
                     </select>
-                    <button type="button" class="btn btn-success" wire:click="exportExcel">Excel</button>
+                    <button type="button" class="btn btn-success d-none" wire:click="exportExcel">Excel</button>
                     <a href="{{ route('inbound-create') }}" class="btn btn-primary">New</a>
                     <button type="button" class="btn btn-info" style="width: 150px;" wire:click="$dispatch('reload')">
                         <i class="ti ti-refresh me-1"></i>
@@ -31,16 +31,10 @@
                         <th>No.</th>
                         <th>Inbound No.</th>
                         <th>Received Date</th>
-                        <th>Supplier</th>
-                        <th>Invoice No.</th>
-                        <th>Trucker</th>
-                        <th>Truck No.</th>
-                        <th>Total Item</th>
-                        <th>Qty Rec</th>
-                        <th>Qty Scan</th>
-                        <th>Koli</th>
-                        <th>IB Type</th>
                         <th>Status</th>
+                        <th>Total Item</th>
+                        <th>Total Qty</th>
+                        <th>Total Price</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -50,16 +44,20 @@
                         <td>{{ $loop->iteration + ($inbounds->currentPage() - 1) * $inbounds->perPage() }}</td>
                         <td>{{ $inbound->receive_id }}</td>
                         <td>{{ $inbound->received_date }}</td>
-                        <td>{{ $inbound->supplier_name }}</td>
-                        <td>{{ $inbound->invoice_no }}</td>
-                        <td>{{ $inbound->transporter_name }}</td>
-                        <td>{{ $inbound->truck_no }}</td>
+                        <td>
+                            @if ($inbound->status_proccess == 'closed')
+                            <span class="badge bg-label-success me-1">
+                                {{ $inbound->status_proccess }}
+                            </span>
+                            @else
+                            <span class="badge bg-label-danger me-1">
+                                {{ $inbound->status_proccess }}
+                            </span>
+                            @endif
+                        </td>
                         <td>{{ $inbound->total_items }}</td>
                         <td>{{ $inbound->total_qty }}</td>
-                        <td></td>
-                        <td>{{ $inbound->koli }}</td>
-                        <td>{{ $inbound->ib_type }}</td>
-                        <td>{{ $inbound->status_proccess }}</td>
+                        <td>{{ Number::currency($inbound->total_price, in: 'IDR') }}</td>
                         <td>
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>
@@ -67,8 +65,10 @@
                                     @if ($inbound->status_proccess == 'open')
                                     <a class="dropdown-item waves-effect" href="javascript:void(0);" wire:click="close({{ $inbound->id }})"><i class="ti ti-check me-1"></i> Close</a>
                                     @endif
-                                    <a class="dropdown-item waves-effect" href="{{ route('inbound-create', ['id' => $inbound->id]) }}" wire:navigate.hover><i class="ti ti-pencil me-1"></i> Edit</a>
+                                    <a class="dropdown-item waves-effect" href="{{ route('inbound-create', ['id' => $inbound->id]) }}" wire:navigate.hover><i class="ti {{ $inbound->status_proccess == 'open' ? 'ti-pencil' : 'ti-eye' }} me-1"></i> {{ $inbound->status_proccess == 'open' ? 'Edit' : 'View' }}</a>
+                                    @if ($inbound->status_proccess == 'open')
                                     <a class="dropdown-item waves-effect" href="javascript:void(0);" wire:click="$dispatch('showDeleteModalNow', {id : {{ $inbound->id }}})"><i class="ti ti-trash me-1"></i> Delete</a>
+                                    @endif
                                 </div>
                             </div>
                         </td>
@@ -81,4 +81,5 @@
             {{ $inbounds->links() }}
         </div>
     </div>
+    <livewire:wms.transaction.inbound.delete />
 </div>

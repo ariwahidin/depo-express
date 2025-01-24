@@ -113,6 +113,8 @@ class Form extends Component
                     ];
             }
         } else {
+            $customer = \App\Models\Customer::where('code', 'CUS-0001')->first();
+            $trucker = \App\Models\Transporter::where('code', 'EXP-0001')->first();
             $this->headerData = [
                 'outbound_no' => 'Auto Generate',
                 'plan_pickup_date' => date('Y-m-d'),
@@ -122,22 +124,23 @@ class Form extends Component
                 'start_picking' => date('H:i'),
                 'end_picking' => date('H:i'),
                 'picker_name' => '',
-                'truck_code' => '',
-                'trucker_name' => '',
+                'truck_code' => $trucker->code,
+                'trucker_name' => $trucker->name,
                 'truck_no' => '',
                 'truck_size' => '',
                 'driver' => '',
                 'remarks' => '',
                 'destination' => '',
-                'customer_code' => '',
-                'customer_name' => '',
-                'customer_address' => '',
-                'delivery_customer_code' => '',
-                'delivery_customer_name' => '',
-                'delivery_customer_address' => '',
+                'customer_code' => $customer->code,
+                'customer_name' => $customer->name,
+                'customer_address' => $customer->address,
+                'delivery_customer_code' => $customer->code,
+                'delivery_customer_name' => $customer->name,
+                'delivery_customer_address' => $customer->address,
                 'koli' => 0,
                 'seal' => 0,
             ];
+            $this->addItem();
         }
 
         $this->itemPilihan = \App\Models\Item::all();
@@ -180,10 +183,10 @@ class Form extends Component
             'headerData.picker_name' => 'required',
             'headerData.truck_code' => 'required',
             'headerData.trucker_name' => 'required',
-            'headerData.truck_no' => 'required',
-            'headerData.truck_size' => 'required',
-            'headerData.driver' => 'required',
-            'headerData.destination' => 'required',
+            // 'headerData.truck_no' => 'required',
+            // 'headerData.truck_size' => 'required',
+            // 'headerData.driver' => 'required',
+            // 'headerData.destination' => 'required',
             'headerData.customer_code' => 'required',
             'headerData.delivery_customer_code' => 'required',
         ]);
@@ -195,10 +198,10 @@ class Form extends Component
         }
 
         foreach ($this->items as $item) {
-            if (empty($item['do_no']) || $item['do_no'] == '') {
-                session()->flash('error', 'DO cannot must be filled');
-                return false;
-            }
+            // if (empty($item['do_no']) || $item['do_no'] == '') {
+            //     session()->flash('error', 'DO cannot must be filled');
+            //     return false;
+            // }
             if (empty($item['item_code']) || $item['item_code'] == '') {
                 session()->flash('error', 'Item code cannot must be filled');
                 return false;
@@ -235,7 +238,7 @@ class Form extends Component
                     'item_name' => '',
                     'barcode_ean' => '',
                     'waranty' => '',
-                    'location' => 'STAGING',
+                    'location' => '',
                     'adaptor' => '',
                     'manual_book' => '',
                     'sn' => '',
@@ -268,7 +271,6 @@ class Form extends Component
         unset($this->items[$index]);
         $this->dispatch('livewire-update');
     }
-
 
     public function create()
     {
@@ -344,7 +346,6 @@ class Form extends Component
         }
     }
 
-
     public function update()
     {
 
@@ -419,5 +420,12 @@ class Form extends Component
             session()->flash('error', $th->getMessage());
             return;
         }
+    }
+
+    #[\Livewire\Attributes\On('selectLocation')]
+    public function selectLocation($index, $location)
+    {
+        $this->items[$index]['location'] = $location;
+        $this->dispatch('closeModalStock');
     }
 }

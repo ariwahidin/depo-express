@@ -191,12 +191,9 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>DO No.</th>
                                 <th>Item</th>
-                                <th class="nowrap">Detail</th>
                                 <th>Location</th>
                                 <th>Req Qty</th>
-                                <th>Status QA</th>
                                 <th>WH Code</th>
                                 <th>Action</th>
                             </tr>
@@ -209,31 +206,15 @@
                                     {{ $no++ }}
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control-sm" wire:model="items.{{$index}}.do_no" required>
-                                </td>
-                                <td>
                                     <span style="font-size: 12px;">Item Name : {{ $item['item_name'] }}</span><br>
                                     <livewire:wms.transaction.inbound.form-select-item :itemSelected="$item['item_code']" :itemOptions="$itemPilihan" :key="$item['id']" wire:key="item-{{ $item['id'] }}" :index="$index" />
                                     <input type="text" class="form-control-sm mt-1" placeholder="remarks" wire:model="items.{{$index}}.remarks">
-                                </td>
-                                <td style="white-space: nowrap;">
-                                    <span style="font-size: 11px;" class="text-primary">GMC : {{ $item['barcode_ean'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">Waranty : {{ $item['waranty'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">Book : {{ $item['manual_book'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">Adaptor : {{ $item['adaptor'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">SN : {{ $item['sn'] }}</span>
                                 </td>
                                 <td>
                                     <input style="width: 100px;" type="text" class="form-control-sm" wire:model="items.{{$index}}.location" required>
                                 </td>
                                 <td>
                                     <input style="width: 100px;" type="number" class="form-control-sm" wire:model="items.{{$index}}.quantity" required>
-                                </td>
-                                <td>
-                                    <select style="width: 100px;" wire:model="items.{{$index}}.status_qa" class="form-select-sm">
-                                        <option value="">Select</option>
-                                        <option value="A">A</option>
-                                    </select>
                                 </td>
                                 <td>
                                     <select style="width: 100px;" wire:model="items.{{$index}}.warehouse" class="form-select-sm">
@@ -244,7 +225,8 @@
                                     </select>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-danger" wire:click="removeItem({{ $index }})">x</button>
+                                    <button class="btn btn-sm btn-primary" @click="$dispatch('checkStock', { index: {{ $index }}, item_code: '{{ $item['item_code'] }}' })"> <i class="ti ti-search"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger" wire:click="removeItem({{ $index }})"><i class="ti ti-trash"></i></button>
                                 </td>
                             </tr>
                             @endforeach
@@ -276,7 +258,7 @@
                 {{ $is_submit ? 'disabled' : '' }}
                 wire:click="{{ $edit ? 'update' : 'create' }}"
                 wire:loading.attr="disabled">
-                
+
                 {{ $edit ? 'Update' : 'Create' }}
                 <span wire:loading wire:target="{{ $edit ? 'update' : 'create' }}" class="ms-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             </button>
@@ -326,7 +308,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" x-on:click="$wire.deleteCategory(id)" data-bs-dismiss="modal">Delete</button>
                     </div>
                 </div>
             </div>
@@ -369,7 +350,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" x-on:click="$wire.deleteCategory(id)" data-bs-dismiss="modal">Delete</button>
                     </div>
                 </div>
             </div>
@@ -412,12 +392,13 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" x-on:click="$wire.deleteCategory(id)" data-bs-dismiss="modal">Delete</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <livewire:wms.transaction.outbound.modal-stock />
 </div>
 
 @assets

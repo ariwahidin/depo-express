@@ -231,10 +231,10 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Item</th>
-                                <th class="nowrap">Detail</th>
+                                <th>Qty</th>
+                                <th>Price</th>
                                 <th>Location</th>
                                 <th>Rec .Date</th>
-                                <th>Req Qty</th>
                                 <th>WH Code</th>
                                 <th>Action</th>
                             </tr>
@@ -251,12 +251,11 @@
                                     <livewire:wms.transaction.inbound.form-select-item :itemSelected="$item['item_code']" :itemOptions="$itemPilihan" :key="$item['id']" wire:key="item-{{ $item['id'] }}" :index="$index" />
                                     <input type="text" class="form-control-sm mt-1" placeholder="remarks" wire:model="items.{{$index}}.remarks">
                                 </td>
-                                <td style="white-space: nowrap;">
-                                    <span style="font-size: 11px;" class="text-primary">GMC : {{ $item['barcode_ean'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">Waranty : {{ $item['waranty'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">Book : {{ $item['manual_book'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">Adaptor : {{ $item['adaptor'] }}</span><br>
-                                    <span style="font-size: 11px;" class="text-primary">SN : {{ $item['sn'] }}</span>
+                                <td>
+                                    <input style="width: 100px;" type="number" class="form-control-sm" wire:model="items.{{$index}}.quantity" required>
+                                </td>
+                                <td>
+                                    <input style="width: 150px;" type="text" class="form-control-sm" x-mask:dynamic="$money($input)" wire:model="items.{{$index}}.price" required>
                                 </td>
                                 <td>
                                     <input style="width: 100px;" type="text" class="form-control-sm" wire:model="items.{{$index}}.location" required>
@@ -264,19 +263,17 @@
                                 <td>
                                     <input type="date" class="form-control-sm" wire:model="items.{{$index}}.received_date" required>
                                 </td>
-                                <td>
-                                    <input style="width: 100px;" type="number" class="form-control-sm" wire:model="items.{{$index}}.quantity" required>
-                                </td>
+
                                 <td>
                                     <select wire:model="items.{{$index}}.warehouse" class="form-select-sm">
-                                        <option value="">Select Warehouse</option>
+                                        <option value="">Select</option>
                                         @foreach($whsOptions as $wh)
                                         <option value="{{ $wh->code }}">{{ $wh->code }}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-danger" wire:click="removeItem({{ $index }})">x</button>
+                                    <button type="button" class="btn btn-sm btn-danger" wire:click="removeItem({{ $index }})"><i class="ti ti-trash"></i></button>
                                 </td>
                             </tr>
                             @endforeach

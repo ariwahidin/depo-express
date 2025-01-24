@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('inbound_id')->references('id')->on('inbound_headers');
             $table->string('receive_id');
             $table->string('item_code');
+            $table->float('price');
             $table->string('location');
             $table->date('receive_date');
             $table->integer('req_qty');

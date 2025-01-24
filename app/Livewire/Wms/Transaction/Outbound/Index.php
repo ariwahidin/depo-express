@@ -83,18 +83,23 @@ class Index extends Component
             }
 
             foreach ($outbound_detail as $item) {
-                try {
-                    $this->processOutboundItem($item, $outbound_header);
-                } catch (\Exception $e) {
-                    Log::error("Failed to process outbound item: {$e->getMessage()}");
-                    throw $e;
+
+                if ($item->location != "") {
+                    try {
+                        $this->processOutboundItemWithLocation($item, $outbound_header);
+                    } catch (\Exception $e) {
+                        Log::error("Failed to process outbound item: {$e->getMessage()}");
+                        throw $e;
+                    }
+                } else {
+                    try {
+                        $this->processOutboundItem($item, $outbound_header);
+                    } catch (\Exception $e) {
+                        Log::error("Failed to process outbound item: {$e->getMessage()}");
+                        throw $e;
+                    }
                 }
             }
-
-            // dd(\App\Models\Pallet::all());
-            // dd(\App\Models\Flag::all());
-
-            // exit;
 
             // Update status header inbound menjadi closed
             $outbound_header->update([
@@ -105,8 +110,6 @@ class Index extends Component
                 'completed_at' => now(),
             ]);
 
-            // dd('success    1');
-
             // Update status transaksi
             \App\Models\Trans::where('trans_no', $outbound_header->trans_no)
                 ->update(
@@ -116,50 +119,44 @@ class Index extends Component
                     ]
                 );
 
-            // dd('success');
-
             DB::commit();
             session()->flash('success', 'Outbound closed successfully');
             return redirect()->route('outbound');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Failed to close outbound: {$e->getMessage()}");
-            session()->flash('error', "Failed to close outbound: {$e->getMessage()}");
+            session()->flash('error', "Failed to close outbound {$outbound_header->outbound_no} : {$e->getMessage()}");
             return redirect()->back();
         }
     }
 
-    private function processOutboundItem($item, $outbound_header)
+    private function processOutboundItemWithLocation($item, $outbound_header)
     {
-        // Generate nomor stock dan pallet
-        // $new_stock_no = \App\Models\Stock::generateStockNo();
-        // $new_pallet_no = \App\Models\Pallet::generatePalletNo();
-        // $inbound_no = $inbound_header->receive_id;
 
-
-        // Check stock
         $stocks = \App\Models\Pallet::where('pallets.item_code', $item->item_code)
             ->join('stocks', 'stocks.stock_no', '=', 'pallets.stock_no')
             ->where('stocks.status_qa', 'A')
             ->where('qty_avail', '>', 0)
+            ->where('location', $item->location)
             ->select('pallets.*', 'stocks.expiry_date')
             ->orderBy('stocks.expiry_date')
             ->lockForUpdate()
             ->get();
 
-        // dd($stock);
+
+        if ($stocks->isEmpty()) {
+            session()->flash('error', 'No available stock for item ' . $item->item_code . ' in location ' . $item->location);
+            throw new \Exception('No available stock for item ' . $item->item_code . ' in location ' . $item->location);
+        }
 
         $total_stock_qty = $stocks->sum('qty_avail');
 
-        // dd($total_stock_qty);
-
         if ($total_stock_qty < $item->req_qty) {
-            session()->flash('error', 'No available stock for item ' . $item->item_code);
-            throw new \Exception('No available stock for item ' . $item->item_code);
+            session()->flash('error', 'No available stock for item ' . $item->item_code . ' in location ' . $item->location);
+            throw new \Exception('No available stock for item ' . $item->item_code . ' in location ' . $item->location);
         }
 
         // Jika qty stock lebih besar dari qty item, maka ambil stock secara looping sampai qty item terpenuhi
-
         $qty_req = $item->req_qty;
         foreach ($stocks as $stock) {
             if ($qty_req > 0) { // Jika qty request masih lebih dari 0
@@ -190,68 +187,74 @@ class Index extends Component
                     'created_by' => Auth::id(),
                     'updated_by' => Auth::id(),
                 ];
-                // dd($dataInsertFlag);
-                // dd($dataInsertFlag);
                 \App\Models\Flag::create($dataInsertFlag);
             }
             if ($qty_req <= 0) {
                 break; // Keluar dari loop jika kebutuhan sudah terpenuhi
             }
         }
+    }
+    private function processOutboundItem($item, $outbound_header)
+    {
 
+        // Check stock
+        $stocks = \App\Models\Pallet::where('pallets.item_code', $item->item_code)
+            ->join('stocks', 'stocks.stock_no', '=', 'pallets.stock_no')
+            ->where('stocks.status_qa', 'A')
+            ->where('qty_avail', '>', 0)
+            ->select('pallets.*', 'stocks.expiry_date')
+            ->orderBy('stocks.expiry_date')
+            ->lockForUpdate()
+            ->get();
 
-        // dd($total_stock_qty);
+        if ($stocks->isEmpty()) {
+            session()->flash('error', 'No available stock for item ' . $item->item_code);
+            throw new \Exception('No available stock for item ' . $item->item_code);
+        }
 
-        // dd($stock);
+        $total_stock_qty = $stocks->sum('qty_avail');
 
-        // if (!$stock) {
-        //     throw new \Exception('No available stock for item ' . $item->item_code);
-        // }
+        if ($total_stock_qty < $item->req_qty) {
+            session()->flash('error', 'No available stock for item ' . $item->item_code);
+            throw new \Exception('No available stock for item ' . $item->item_code);
+        }
 
-        // Buat data Stock
-        // $dataStock = [
-        //     'stock_no' => $new_stock_no,
-        //     'item_code' => $item->item_code,
-        //     'receive_date' => $item->receive_date,
-        //     'expiry_date' => $item->receive_date,
-        //     'status_qa' => 'A',
-        //     'created_by' => Auth::id(),
-        //     'updated_by' => Auth::id(),
-        // ];
-        // $stock = \App\Models\Stock::create($dataStock);
+        // Jika qty stock lebih besar dari qty item, maka ambil stock secara looping sampai qty item terpenuhi
+        $qty_req = $item->req_qty;
+        foreach ($stocks as $stock) {
+            if ($qty_req > 0) { // Jika qty request masih lebih dari 0
+                if ($qty_req >= $stock->qty_avail) {
+                    // Ambil semua stok yang tersedia
+                    $qty_pick = $stock->qty_avail;
+                    $qty_req -= $stock->qty_avail;
+                    $stock->qty_avail -= $qty_pick; // Stok habis
+                    $stock->qty_onhand -= $qty_pick;
+                    $stock->qty_out += $qty_pick;
+                } else {
+                    // Ambil sebagian stok sesuai kebutuhan
+                    $qty_pick = $qty_req;
+                    $stock->qty_avail -= $qty_req;
+                    $stock->qty_onhand -= $qty_req;
+                    $stock->qty_out += $qty_req;
+                    $qty_req = 0; // Kebutuhan terpenuhi
+                }
+                $stock->save(); // Simpan perubahan stok
 
-        // Buat data Pallet
-        // $dataPallet = [
-        //     'pallet_no' => $new_pallet_no,
-        //     'stock_no' => $stock->stock_no,
-        //     'item_code' => $item->item_code,
-        //     'location' => $item->location,
-        //     'qty_in' => $item->req_qty,
-        //     'qty_onhand' => $item->req_qty,
-        //     'qty_avail' => $item->req_qty,
-        //     'status_qa' => $stock->status_qa,
-        //     'created_by' => Auth::id(),
-        //     'updated_by' => Auth::id(),
-        // ];
-        // $pallet = \App\Models\Pallet::create($dataPallet);
-
-        // Buat data Flag
-        // $dataFlag = [
-        //     'reference_no' => $inbound_no,
-        //     'stock_no' => $pallet->stock_no,
-        //     'pallet_no' => $pallet->pallet_no,
-        //     'item_code' => $item->item_code,
-        //     'qty' => $item->req_qty,
-        //     'created_by' => Auth::id(),
-        //     'updated_by' => Auth::id(),
-        // ];
-        // \App\Models\Flag::create($dataFlag);
-
-        // // Update status item detail menjadi closed
-        // $item->update([
-        //     'status' => 'close',
-        //     'updated_by' => Auth::id(),
-        //     'updated_at' => now(),
-        // ]);
+                $dataInsertFlag = [
+                    'reference_no' => $outbound_header->outbound_no,
+                    'stock_no' => $stock->stock_no,
+                    'pallet_no' => $stock->pallet_no,
+                    'item_code' => $item->item_code,
+                    'detail_id' => (int)$item->id,
+                    'qty' => $qty_pick,
+                    'created_by' => Auth::id(),
+                    'updated_by' => Auth::id(),
+                ];
+                \App\Models\Flag::create($dataInsertFlag);
+            }
+            if ($qty_req <= 0) {
+                break; // Keluar dari loop jika kebutuhan sudah terpenuhi
+            }
+        }
     }
 }

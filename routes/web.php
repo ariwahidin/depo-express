@@ -84,6 +84,22 @@ Route::middleware(
         Route::get('/stock', \App\Livewire\Wms\Inventory\Stock::class)->name('inventory-stock');
     });
 
+Route::middleware(
+    [
+        'auth:sanctum',
+        'role:admin',
+        config('jetstream.auth_session', 'verified'),
+        'verified',
+        'session_validated',
+    ]
+)
+    ->prefix('/wms/report')
+    ->group(function () {
+        Route::get('/inbound', \App\Livewire\Wms\Report\Inbound::class)->name('report-inbound');
+        Route::get('/outbound' , \App\Livewire\Wms\Report\Outbound::class)->name('report-outbound');
+        Route::get('/stock', \App\Livewire\Wms\Report\Stock::class)->name('report-stock');
+    });
+
 
 
 

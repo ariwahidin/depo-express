@@ -168,5 +168,34 @@ class MenuSeeder extends Seeder
                 'route' => '/stock',
             ],
         );
+
+        // Report Section
+        $reportMenu  = \App\Models\ParentMenu::create(
+            [
+                'name' => 'Report',
+                'prefix' => 'wms/report*',
+                'icon' => 'menu-icon tf-icons ti ti-layout-grid',
+            ]
+        );
+
+        $menuReport = \App\Models\Menu::create(
+            [
+                'parent_menu_id' => $reportMenu->id,
+                'route_name' => 'report-inbound',
+                'icon' => '',
+                'name' => 'Inbound',
+                'route' => '/inbound',
+            ],
+        );
+
+        $menuReport = \App\Models\Menu::create(
+            [
+                'parent_menu_id' => $reportMenu->id,
+                'route_name' => 'report-outbound',
+                'icon' => '',
+                'name' => 'Outbound',
+                'route' => '/outbound',
+            ],
+        );
     }
 }
