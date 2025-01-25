@@ -21,5 +21,13 @@ class UserSeeder extends Seeder
         ]);
 
         $admin->assignRole('admin');
+
+        $adminYcid = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@ycid.com',
+            'password' => bcrypt('@dmin123#!'),
+        ]);
+
+        $adminYcid->assignRole('admin');
     }
 }

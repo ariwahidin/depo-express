@@ -17,6 +17,7 @@ class Stock extends Component
 
     public function render()
     {
+        // dd($this->getStock());
         return view('livewire.wms.inventory.stock', [
             'stocks' => $this->getStock(),
         ]);
@@ -31,7 +32,6 @@ class Stock extends Component
                     ->orWhere('items.item_name', 'like', '%' . $this->search . '%');
             })
             ->select(
-                'stocks.stock_no',
                 'pallets.item_code',
                 'pallets.location',
                 'items.item_name',
@@ -39,8 +39,7 @@ class Stock extends Component
                 DB::raw('SUM(pallets.qty_out) as total_qty_out'),
                 DB::raw('SUM(pallets.qty_avail) as total_qty_avail')
             )
-            ->groupBy('pallets.item_code', 'pallets.location')
-            ->orderBy('pallets.created_at', 'desc')
+            ->groupBy('pallets.item_code', 'pallets.location','items.item_name')
             ->paginate(10);
     }
 }

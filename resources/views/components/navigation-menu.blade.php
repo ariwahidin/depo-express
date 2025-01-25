@@ -16,6 +16,7 @@
                         d="M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z"
                         fill="#7367F0" />
                 </svg> -->
+                <i class="ti ti-package ti-28px"></i>
             </span>
             <span style="font-size: 18px;" class="app-brand-text demo menu-text fw-bold">Depo Inventory</span>
         </a>
@@ -28,6 +29,12 @@
 
     <div class="menu-inner-shadow"></div>
     <ul class="menu-inner py-1">
+        <li class="menu-item {{ Request::routeIs('dashboard') ? 'active' : '' }}" >
+            <a href="{{ route('dashboard') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                <div data-i18n="Dashboard">Dashboard</div>
+            </a>
+        </li>
         <x-menu-item />
     </ul>
 

@@ -23,6 +23,8 @@ class Form extends Component
     public $customers, $transporters, $truck_sizes, $origins;
 
     public $is_submit = false;
+
+    #[\Livewire\Attributes\Title('Outbound Form')] 
     public function render()
     {
         return view('livewire.wms.transaction.outbound.form');
@@ -91,6 +93,7 @@ class Form extends Component
                         'adaptor' => $item->adaptor,
                         'manual_book' => $item->manual_book,
                         'sn' => $item->sn,
+                        'uom' => $item->uom,
                         'status_qa' => $d->status_qa,
                         'warehouse' => $d->wh_code,
                         'quantity' => $d->req_qty,
@@ -242,6 +245,7 @@ class Form extends Component
                     'adaptor' => '',
                     'manual_book' => '',
                     'sn' => '',
+                    'uom' => '',
                     'status_qa' => 'A',
                     'warehouse' => '',
                     'quantity' => 1,
@@ -264,6 +268,7 @@ class Form extends Component
         $this->items[$index]['manual_book'] = $item->manual_book;
         $this->items[$index]['adaptor'] = $item->adaptor;
         $this->items[$index]['sn'] = $item->sn;
+        $this->items[$index]['uom'] = $item->uom;
     }
 
     public function removeItem($index)

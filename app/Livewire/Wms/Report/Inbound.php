@@ -19,6 +19,7 @@ class Inbound extends Component
     public $search = '';
     public $status = 'all';
 
+    #[\Livewire\Attributes\Title('Report Inbound')] 
     public function render()
     {
         // dd($this->inbounds);

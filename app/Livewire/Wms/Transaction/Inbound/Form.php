@@ -84,6 +84,7 @@ class Form extends Component
                         'price' => $d->price,
                         'manual_book' => $item->manual_book,
                         'sn' => $item->sn,
+                        'uom' => $item->uom,
                         'warehouse' => $d->wh_code,
                         'quantity' => $d->req_qty,
                         'remarks' => $d->remarks
@@ -92,6 +93,8 @@ class Form extends Component
         } else {
             $transporter = \App\Models\Transporter::where('code', 'EXP-0001')->first();
             $supplier = \App\Models\Supplier::where('code', 'SUP-0001')->first();
+            $truck = \App\Models\TruckSize::where('code', 'TRK-0001')->first();
+            $country = \App\Models\Origin::first();
 
             // dd($supplier, $transporter);
             $this->headerData = [
@@ -103,7 +106,7 @@ class Form extends Component
                 'doc_no' => '',
                 'sj_no' => '',
                 'po_date' => date('Y-m-d'),
-                'original_country' => '',
+                'original_country' => $country->id,
                 'remarks' => '',
                 'invoice_no' => 'OTHER',
                 'supplier' => $supplier->code,
@@ -112,13 +115,12 @@ class Form extends Component
                 'transporter_name' => $transporter->name,
                 'driver' => 'OTHER',
                 'truck_no' => 'B 1234 ABC',
-                'truck_size' => '',
-                'container_no' => '',
-                'bl_no' => '',
-                'ib_status' => '',
+                'truck_size' => $truck->id,
+                'container_no' => 'OTHER',
+                'bl_no' => 'OTHER',
+                'ib_status' => 'NORMAL',
                 'koli' => 0,
                 'seal' => 0,
-                'container_no' => '',
                 'size_id' => 0,
             ];
             $this->addItem();
@@ -144,6 +146,7 @@ class Form extends Component
         $this->headerData['transporter_name'] = $name;
     }
 
+    #[\Livewire\Attributes\Title('Inbound Form')] 
     public function render()
     {
         return view('livewire.wms.transaction.inbound.form');
@@ -385,6 +388,8 @@ class Form extends Component
             'line_added' => 'required | numeric | min:1 | max:50',
         ]);
 
+        $wh = \App\Models\Warehouse::first();
+
         for ($i = 1; $i <= $this->line_added; $i++) {
             array_push(
                 $this->items,
@@ -399,7 +404,8 @@ class Form extends Component
                     'adaptor' => '',
                     'manual_book' => '',
                     'sn' => '',
-                    'warehouse' => '',
+                    'uom' => '',
+                    'warehouse' => $wh->code,
                     'quantity' => 1,
                     'remarks' => ''
                 ]
@@ -420,5 +426,7 @@ class Form extends Component
         $this->items[$index]['manual_book'] = $item->manual_book;
         $this->items[$index]['adaptor'] = $item->adaptor;
         $this->items[$index]['sn'] = $item->sn;
+
+        $this->items[$index]['uom'] = $item->uom;
     }
 }

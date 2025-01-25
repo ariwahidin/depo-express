@@ -197,5 +197,15 @@ class MenuSeeder extends Seeder
                 'route' => '/outbound',
             ],
         );
+
+        $menuReport = \App\Models\Menu::create(
+            [
+                'parent_menu_id' => $reportMenu->id,
+                'route_name' => 'report-stock',
+                'icon' => '',
+                'name' => 'Stock',
+                'route' => '/stock',
+            ],
+        );
     }
 }

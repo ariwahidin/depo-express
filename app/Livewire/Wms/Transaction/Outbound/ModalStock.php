@@ -25,11 +25,12 @@ class ModalStock extends Component
             ->join('items', 'items.item_code', '=', 'pallets.item_code')
             ->where('qty_avail', '>', 0)
             ->select(
-                'pallets.*',
+                'pallets.item_code',
+                'pallets.location',
                 'items.item_name',
                 DB::raw('SUM(pallets.qty_avail) as total_qty_avail')
             )
-            ->groupBy('pallets.item_code', 'pallets.location')
+            ->groupBy('pallets.item_code', 'pallets.location', 'items.item_name')
             ->get();
 
         $this->stocks = $stock;

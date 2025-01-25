@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('outbound_details', function (Blueprint $table) {
             $table->id();
             $table->integer('outbound_id');
-            $table->foreign('outbound_id')->references('id')->on('outbound_headers');
             $table->string('outbound_no');
             $table->string('do_no');
             $table->string('item_code');
@@ -27,9 +26,6 @@ return new class extends Migration
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
             $table->enum('status', ['open', 'close'])->default('open');
             $table->enum('delete_status', ['yes', 'no'])->default('no');
             $table->softDeletes();

@@ -75,7 +75,8 @@ class DatabaseSeeder extends Seeder
             TransporterSeeder::class,
             TruckSizeSeeder::class,
             WarehouseSeeder::class,
-            OriginSeeder::class
+            OriginSeeder::class,
+            UserSeeder::class,
         ]);
 
     }

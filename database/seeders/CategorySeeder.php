@@ -11,13 +11,19 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $categories = Barang::select('category')->distinct()->get();
-        foreach ($categories as $category) {
-            \App\Models\Category::create(
-                [
-                    'name' => $category->category
-                ]
-            );
-        }
+        // $categories = Barang::select('category')->distinct()->get();
+        // foreach ($categories as $category) {
+        //     \App\Models\Category::create(
+        //         [
+        //             'name' => $category->category
+        //         ]
+        //     );
+        // }
+
+        \App\Models\Category::create(
+            [
+                'name' => 'OTHER'
+            ]
+        );
     }
 }

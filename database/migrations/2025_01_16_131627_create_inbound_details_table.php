@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('inbound_details', function (Blueprint $table) {
             $table->id();
             $table->integer('inbound_id');
-            $table->foreign('inbound_id')->references('id')->on('inbound_headers');
             $table->string('receive_id');
             $table->string('item_code');
             $table->float('price');
@@ -26,9 +25,6 @@ return new class extends Migration
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
             $table->enum('status', ['open', 'close'])->default('open');
             $table->enum('delete_status', ['yes', 'no'])->default('no');
             $table->softDeletes();

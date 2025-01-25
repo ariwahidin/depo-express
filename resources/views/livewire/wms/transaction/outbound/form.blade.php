@@ -194,6 +194,7 @@
                                 <th>Item</th>
                                 <th>Location</th>
                                 <th>Req Qty</th>
+                                <th>UoM</th>
                                 <th>WH Code</th>
                                 <th>Action</th>
                             </tr>
@@ -215,6 +216,9 @@
                                 </td>
                                 <td>
                                     <input style="width: 100px;" type="number" class="form-control-sm" wire:model="items.{{$index}}.quantity" required>
+                                </td>
+                                <td>
+                                    <input style="width: 100px;" type="text" class="form-control-sm" wire:model="items.{{$index}}.uom" readonly required>
                                 </td>
                                 <td>
                                     <select style="width: 100px;" wire:model="items.{{$index}}.warehouse" class="form-select-sm">

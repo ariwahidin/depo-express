@@ -35,6 +35,7 @@
                         <th>Total Item</th>
                         <th>Total Qty</th>
                         <th>Total Price</th>
+                        <th>Remarks</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -58,6 +59,7 @@
                         <td>{{ $inbound->total_items }}</td>
                         <td>{{ $inbound->total_qty }}</td>
                         <td>{{ Number::currency($inbound->total_price, in: 'IDR') }}</td>
+                        <td>{{ $inbound->remarks }}</td>
                         <td>
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>

@@ -14,17 +14,12 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->integer('product_id')->nullable();
-            // $table->foreign('product_id')->references('id')->on('products');
             $table->integer('amount');
             $table->string('snap_token')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
             $table->enum('status', ['active', 'inactive','pending','failed', 'success'])->default('active');
             $table->enum('delete_status', ['yes', 'no'])->default('no');
             $table->softDeletes();

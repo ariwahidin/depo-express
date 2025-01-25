@@ -13,6 +13,7 @@ class Form extends Component
     public $uoms  = [
         'PCS',
         'BOX',
+        'LTR',
     ];
     public $line_added = 1;
     public $is_submit = false;
@@ -22,6 +23,8 @@ class Form extends Component
     {
         $this->addItem();
     }
+
+    #[\Livewire\Attributes\Title('Form Item')] 
     public function render()
     {
         return view('livewire.wms.master.item.form');

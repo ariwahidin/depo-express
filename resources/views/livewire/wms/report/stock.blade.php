@@ -5,7 +5,7 @@
                 <h5 class="mb-0">Report Stock</h5>
             </div>
             <div class="col-md-12 mt-2 d-flex justify-content-between gap-2 align-items-center">
-                <div class="input-group w-70">
+                <div class="input-group w-70 d-none">
                     <span class="input-group-text">Periode Date</span>
                     <input type="date" wire:model.live="periode_date" class="form-control" placeholder="Date" aria-label="Date">
                 </div>
@@ -42,11 +42,11 @@
                         <td>{{ $stock->item_code }}</td>
                         <td>{{ $stock->item_name }}</td>
                         <td>{{ $stock->qty_in }}</td>
-                        <td>{{ $stock->total_price }}</td>
-                        <td>{{ $stock->avg_price_per_qty_in }}</td>
+                        <td>{{ Number::currency($stock->total_price, in: 'IDR') }}</td>
+                        <td>{{ Number::currency($stock->avg_price_per_qty_in, in: 'IDR') }}</td>
                         <td>{{ $stock->qty_out }}</td>
                         <td>{{ $stock->qty_stock }}</td>
-                        <td>{{ $stock->total_stock_value }}</td>
+                        <td>{{ Number::currency($stock->total_stock_value, in: 'IDR') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

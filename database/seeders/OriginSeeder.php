@@ -13,13 +13,19 @@ class OriginSeeder extends Seeder
      */
     public function run(): void
     {
-        $origins = Origin::all();
-        foreach ($origins as $origin) {
-            \App\Models\Origin::create(
-                [
-                    'name' => $origin->country,
-                ]
-            );
-        }
+        // $origins = Origin::all();
+        // foreach ($origins as $origin) {
+        //     \App\Models\Origin::create(
+        //         [
+        //             'name' => $origin->country,
+        //         ]
+        //     );
+        // }
+
+        \App\Models\Origin::create(
+            [
+                'name' => 'OTHER',
+            ]
+        );
     }
 }

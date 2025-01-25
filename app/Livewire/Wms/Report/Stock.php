@@ -3,11 +3,11 @@
 namespace App\Livewire\Wms\Report;
 
 use Livewire\Component;
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
 
 class Stock extends Component
 {
@@ -15,6 +15,8 @@ class Stock extends Component
     public $periode_date = '';
     public $search = '';
 
+
+    #[\Livewire\Attributes\Title('Report Stock')] 
     public function render()
     {
         return view('livewire.wms.report.stock', [

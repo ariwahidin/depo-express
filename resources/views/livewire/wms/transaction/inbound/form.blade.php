@@ -88,7 +88,7 @@
                                     <select class="ms-1 form-select-sm w-50 border-2 border-dark" wire:model="headerData.original_country">
                                         <option value="">Select Country</option>
                                         @foreach($origins as $country)
-                                        <option value="{{ $country->name }}">{{ $country->name }}</option>
+                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('headerData.original_country') <br> <span class="text-danger">{{ $message }}</span> @enderror
@@ -162,7 +162,6 @@
                                     <div class="ms-1 input-group input-group-sm">
                                         <input style="width: 100px;" type="text" class="form-control-sm" wire:model="headerData.truck_no" required>
                                         <select class="form-select border-2 border-dark" wire:model="headerData.truck_size">
-                                            <option value="">Select Size</option>
                                             @foreach($truck_sizes as $truckSize)
                                             <option value="{{ $truckSize->id }}">{{ $truckSize->code }}</option>
                                             @endforeach
@@ -233,6 +232,7 @@
                                 <th>Item</th>
                                 <th>Qty</th>
                                 <th>Price</th>
+                                <th>UoM</th>
                                 <th>Location</th>
                                 <th>Rec .Date</th>
                                 <th>WH Code</th>
@@ -256,6 +256,9 @@
                                 </td>
                                 <td>
                                     <input style="width: 150px;" type="text" class="form-control-sm" x-mask:dynamic="$money($input)" wire:model="items.{{$index}}.price" required>
+                                </td>
+                                <td>
+                                    <input style="width: 100px;" type="text" class="form-control-sm" wire:model="items.{{$index}}.uom" readonly required>
                                 </td>
                                 <td>
                                     <input style="width: 100px;" type="text" class="form-control-sm" wire:model="items.{{$index}}.location" required>

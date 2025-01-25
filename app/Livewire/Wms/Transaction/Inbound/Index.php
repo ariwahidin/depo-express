@@ -17,6 +17,7 @@ class Index extends Component
     public $search = '';
     public $status = 'all';
 
+    #[\Livewire\Attributes\Title('List Inbound')] 
     #[\Livewire\Attributes\On('hideDeleteModalNow')]
     public function render()
     {
@@ -47,6 +48,7 @@ class Index extends Component
                 }
             })
             ->select(
+                'inbound_headers.remarks',
                 'inbound_headers.receive_id',
                 'inbound_headers.received_date',
                 'inbound_headers.invoice_no',

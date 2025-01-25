@@ -17,6 +17,7 @@ class Outbound extends Component
     public $search = '';
     public $status = 'all';
 
+    #[\Livewire\Attributes\Title('Report Outbound')] 
     public function render()
     {
         return view('livewire.wms.report.outbound', [
