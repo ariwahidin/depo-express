@@ -46,6 +46,16 @@ class Stock extends Component
             ->paginate(10);
     }
 
+    public static function getStockValue(){
+        $instance = new self();
+        $value_stock = $instance->getInventoryStock();
+        $total_stock_value = 0;
+        foreach ($value_stock as $value) {
+            $total_stock_value += $value->total_stock_value;
+        }
+        return $total_stock_value;
+    }
+
     private function getInventoryStock()
     {
         $result = DB::select('
