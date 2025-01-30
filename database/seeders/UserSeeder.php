@@ -29,5 +29,21 @@ class UserSeeder extends Seeder
         ]);
 
         $adminYcid->assignRole('admin');
+
+        $adminYcid = User::factory()->create([
+            'name' => 'Derry Mulyanto',
+            'email' => 'derry.mulyanto@id.yusen-logistics.com',
+            'password' => bcrypt('DMyo2501'),
+        ]);
+
+        $adminYcid->assignRole('admin');
+
+        $adminYcid = User::factory()->create([
+            'name' => 'Deri Andi Wijaya',
+            'email' => 'gudanginventory.cakung@id.yusen-logistics.com',
+            'password' => bcrypt('GIck2501'),
+        ]);
+
+        $adminYcid->assignRole('admin');
     }
 }
